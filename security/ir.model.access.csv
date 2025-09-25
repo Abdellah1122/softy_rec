@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_softy_rec_doc_user,access_softy_rec_doc_user,model_softy_rec_doc,base.group_user,1,1,1,1
+access_softy_scorecard_all,access_softy_scorecard_all,model_softy_scorecard,base.group_user,1,1,1,1
+access_softy_phone_screening,access_phone_screening,model_softy_phone_screening,base.group_user,1,1,1,1
+access_softy_hist,access_softy_hist,model_softy_hist,base.group_user,1,1,1,1

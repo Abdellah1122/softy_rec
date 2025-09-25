@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Inherit hr.job form view to add status and document requirements -->
+        <record id="hr_job_view_form_inherit" model="ir.ui.view">
+            <field name="name">hr.job.form.inherit</field>
+            <field name="model">hr.job</field>
+            <field name="inherit_id" ref="hr_recruitment.hr_job_survey"/>
+            <field name="arch" type="xml">
+               
+                <!-- Add status and documents pages to the existing notebook -->
+                <xpath expr="//notebook" position="inside">
+                    
+                    <!-- Page Statut (première page) -->
+                    <page string="Statut du Suivi" name="job_status">
+                        <group>
+                            <group string="Suivi du Recrutement">
+                                <field name="status" widget="selection"/>
+                            </group>
+                        </group>
+                    </page>
+                    
+                    <!-- Page Documents Requis (deuxième page) -->
+                    <page string="Documents Requis pour ce poste" name="required_documents">
+                        <group>
+                            <group string="Documents d'Identité et Administratifs">
+                                <field name="copy_cin"/>
+                                <field name="doc_cv"/>
+                                <field name="doc_diplomes"/>
+                                <field name="doc_rib"/>
+                            </group>
+                            
+                            <group string="Documents Professionnels">
+                                <field name="doc_demission"/>
+                                <field name="doc_bulletins_paie"/>
+                                <field name="doc_attestation_libre"/>
+                                <field name="doc_certificats_travail"/>
+                            </group>
+                        </group>
+                        
+                        <group>
+                            <group string="Documents Familiaux">
+                                <field name="doc_acte_mariage"/>
+                                <field name="doc_extraits_naissance"/>
+                            </group>
+                            
+                            <group string="Documents Médicaux">
+                                <field name="doc_anthropometrique"/>
+                                <field name="doc_radiologie"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Enhanced Kanban View - Conservative Approach -->
+        <record id="hr_job_kanban_enhanced_with_status" model="ir.ui.view">
+            <field name="name">hr.job.kanban.enhanced.status</field>
+            <field name="model">hr.job</field>
+            <field name="inherit_id" ref="hr_recruitment.view_hr_job_kanban"/>
+            <field name="arch" type="xml">
+
+                <!-- Add status and date fields -->
+                <xpath expr="//field[@name='alias_email']" position="after">
+                    <field name="status"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                </xpath>
+
+                <!-- Clean minimalist layout after the title -->
+                <xpath expr="//field[@name='name']" position="after">
+                    <!-- All three elements inline -->
+                    <div style="padding: 0 24px; margin: 16px 0; display: flex;justify-content:center; align-items: center; gap: 12px; ">
+                        <!-- Department -->
+                        <t t-if="record.department_id and record.department_id.value">
+                            <span style="font-size: 0.85rem; color: #374151; font-weight: 600; padding: 4px 12px; background: rgba(59, 130, 246, 0.1); border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.2);">
+                                <t t-esc="record.department_id.value"/>
+                            </span>
+                        </t>
+                        
+                        <!-- Status badge -->
+                        <t t-if="record.status and record.status.value">
+                            <t t-if="record.status.raw_value == 'en_cours'">
+                                <span style="display: inline-block; font-weight: 600; font-size: 0.75rem; padding: 6px 16px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; background: linear-gradient(135deg, #fef3e2 0%, #fde68a 100%); color: #d97706; border: 1px solid #f59e0b;">En cours</span>
+                            </t>
+                            <t t-elif="record.status.raw_value == 'cloture'">
+                                <span style="display: inline-block; font-weight: 600; font-size: 0.75rem; padding: 6px 16px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; background: linear-gradient(135deg, #ecfdf5 0%, #a7f3d0 100%); color: #065f46; border: 1px solid #10b981;">Clôturé</span>
+                            </t>
+                            <t t-elif="record.status.raw_value == 'annule'">
+                                <span style="display: inline-block; font-weight: 600; font-size: 0.75rem; padding: 6px 16px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; background: linear-gradient(135deg, #fef2f2 0%, #fca5a5 100%); color: #dc2626; border: 1px solid #f87171;">Annulé</span>
+                            </t>
+                            <t t-else="">
+                                <span style="display: inline-block; font-weight: 600; font-size: 0.75rem; padding: 6px 16px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; background: linear-gradient(135deg, #f0f9ff 0%, #bfdbfe 100%); color: #1e40af; border: 1px solid #3b82f6;">Nouveau</span>
+                            </t>
+                        </t>
+                    </div>
+                </xpath>
+
+                <!-- Clean dates section -->
+                <xpath expr="//div[@class='row g-0 mt-0 mt-sm-3 ms-2']" position="before">
+                    <t t-if="record.date_from and record.date_from.value or record.date_to and record.date_to.value">
+                        <div style="padding: 16px 24px; margin: 16px 20px; background: #fafbfc; border: 1px solid #e5e7eb; border-radius: 8px;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; text-align: center;">
+                                <t t-if="record.date_from and record.date_from.value">
+                                    <div>
+                                        <div style="font-size: 0.7rem; color: #9ca3af; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Demande</div>
+                                        <div style="font-size: 0.9rem; font-weight: 700; color: #1f2937; font-family: monospace;">
+                                            <t t-esc="record.date_from.value"/>
+                                        </div>
+                                    </div>
+                                </t>
+                                
+                                <t t-if="record.date_to and record.date_to.value">
+                                    <div>
+                                        <div style="font-size: 0.7rem; color: #9ca3af; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Échéance</div>
+                                        <div style="font-size: 0.9rem; font-weight: 700; color: #1f2937; font-family: monospace;">
+                                            <t t-esc="record.date_to.value"/>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </t>
+                </xpath>
+
+                <!-- Enhanced department and user info styling with inline styles -->
+                <xpath expr="//field[@name='user_id']" position="attributes">
+                    <attribute name="style">font-size: 0.9rem; color: #374151; font-weight: 600; margin-bottom: 8px; padding: 6px 12px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 8px; border: 1px solid #e2e8f0; display: inline-block;</attribute>
+                </xpath>
+
+                <!-- Style company info -->
+                <xpath expr="//div[@class='small']" position="attributes">
+                    <attribute name="style">font-size: 0.85rem; color: #6b7280; margin: 8px 0; padding: 6px 10px; background: rgba(59, 130, 246, 0.05); border-radius: 6px; display: inline-block;</attribute>
+                </xpath>
+
+                <!-- Remove CSS section completely -->
+
+            </field>
+        </record>
+    </data>
+</odoo>

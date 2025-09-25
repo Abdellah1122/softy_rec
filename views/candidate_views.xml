@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Inherit candidate form view to add blacklist fields -->
+        <record id="hr_candidate_view_form_blacklist" model="ir.ui.view">
+            <field name="name">hr.candidate.form.blacklist</field>
+            <field name="model">hr.candidate</field>
+            <field name="inherit_id" ref="hr_recruitment.hr_candidate_view_form"/>
+            <field name="arch" type="xml">
+                <!-- Add blacklist fields as invisible for ribbon -->
+                <field name="company_id" position="after">
+                    <field name="blacklisted" invisible="1"/>
+                    <field name="motif_blackliste" invisible="1"/>
+                </field>
+                
+                <!-- Add blacklist ribbon -->
+                <widget name="web_ribbon" position="after">
+                    <widget name="web_ribbon" title="Blacklisté" bg_color="text-bg-danger" invisible="not blacklisted"/>
+                </widget>
+                
+                <!-- Add blacklist fields after candidate_properties -->
+                <field name="candidate_properties" position="after">
+                    <group string="Blackliste" colspan="2">
+                        <field name="blacklisted" string="Candidat Blacklisté"/>
+                        <field name="motif_blackliste" invisible="not blacklisted" placeholder="Raison du blacklistage..."/>
+                    </group>
+                </field>
+            </field>
+        </record>
+
+        <!-- Inherit candidate list view to show blacklist status -->
+        <record id="hr_candidate_view_list_blacklist" model="ir.ui.view">
+            <field name="name">hr.candidate.list.blacklist</field>
+            <field name="model">hr.candidate</field>
+            <field name="inherit_id" ref="hr_recruitment.hr_candidate_view_tree"/>
+            <field name="arch" type="xml">
+                <field name="priority" position="after">
+                    <field name="blacklisted" widget="boolean_toggle" optional="show" string="Blacklisté"/>
+                    <field name="motif_blackliste" optional="hide" string="Motif Blackliste"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Inherit candidate kanban view to show blacklist -->
+        <record id="hr_candidate_view_kanban_blacklist" model="ir.ui.view">
+            <field name="name">hr.candidate.kanban.blacklist</field>
+            <field name="model">hr.candidate</field>
+            <field name="inherit_id" ref="hr_recruitment.hr_candidate_view_kanban"/>
+            <field name="arch" type="xml">
+                <field name="color" position="after">
+                    <field name="blacklisted"/>
+                </field>
+                
+                <!-- Add blacklist indicator in kanban card -->
+                <field name="categ_ids" position="after">
+                    <div t-if="record.blacklisted.raw_value" class="badge text-bg-danger">
+                        <i class="fa fa-ban"/> Blacklisté
+                    </div>
+                </field>
+            </field>
+        </record>
+
+        <!-- Inherit candidate search view to add blacklist filters -->
+        <record id="hr_candidate_view_search_blacklist" model="ir.ui.view">
+            <field name="name">hr.candidate.search.blacklist</field>
+            <field name="model">hr.candidate</field>
+            <field name="inherit_id" ref="hr_recruitment.hr_candidate_view_search"/>
+            <field name="arch" type="xml">
+                <!-- Add search fields -->
+                <field name="linkedin_profile" position="after">
+                    <field name="motif_blackliste" string="Motif Blackliste"/>
+                </field>
+                
+                <!-- Add blacklist filters -->
+                <filter name="archived" position="before">
+                    <filter string="Blacklistés" name="blacklisted" domain="[('blacklisted', '=', True)]"/>
+                    <filter string="Non Blacklistés" name="not_blacklisted" domain="[('blacklisted', '=', False)]"/>
+                    <separator/>
+                </filter>
+                
+                <!-- Add groupby for blacklist status -->
+                <filter name="group_by_manager" position="after">
+                    <filter string="Statut Blackliste" name="group_blacklisted" domain="[]" context="{'group_by': 'blacklisted'}"/>
+                </filter>
+            </field>
+        </record>
+    </data>
+</odoo>
