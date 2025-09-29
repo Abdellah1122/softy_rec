@@ -17,6 +17,21 @@
                             <group string="Suivi du Recrutement">
                                 <field name="status" widget="selection"/>
                             </group>
+                            
+                            <group string="Envoi des CV - Première Vague">
+                                <field name="dateenvoi1"/>
+                                <field name="nbrenvoie1"/>
+                            </group>
+                            
+                            <group string="Envoi des CV - Deuxième Vague">
+                                <field name="dateenvoi2"/>
+                                <field name="nbrenvoie2"/>
+                            </group>
+                            
+                            <group string="Envoi des CV - Troisième Vague">
+                                <field name="dateenvoi3"/>
+                                <field name="nbrenvoie3"/>
+                            </group>
                         </group>
                     </page>
                     

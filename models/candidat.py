@@ -22,3 +22,4 @@ class HrCandidateInherit(models.Model):
         """Clear the blacklist reason if blacklisted is unchecked"""
         if not self.blacklisted:
             self.motif_blackliste = False
+

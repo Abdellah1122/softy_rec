@@ -15,6 +15,13 @@ class HrJobInherit(models.Model):
         required=False
     )
 
+    dateenvoi1=fields.Date(string="Date d'envoie des CV 1")
+    nbrenvoie1=fields.Integer(string="Nombre de CV Envoyé 2")
+    dateenvoi2=fields.Date(string="Date d'envoie des CV 2")
+    nbrenvoie2=fields.Integer(string="Nombre de CV Envoyé 2")
+    dateenvoi3=fields.Date(string="Date d'envoie des CV 3")
+    nbrenvoie3=fields.Integer(string="Nombre de CV Envoyé 3")        
+
     # Document requirements for administrative validation
     copy_cin = fields.Boolean(
         string="2 copies de la CIN légalisées & attestation CNSS",

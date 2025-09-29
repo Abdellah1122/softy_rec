@@ -22,6 +22,10 @@ class HrApplicant(models.Model):
         string="Screening Telephonique"
     )
 
+    sourcer = fields.Many2one(
+        comodel_name="res.users",
+        string="Sourcer",
+    )
     is_candidate_blacklisted = fields.Boolean(compute="_compute_is_candidate_blacklisted", store=True)
     @api.depends('candidate_id.blacklisted')
     def _compute_is_candidate_blacklisted(self):

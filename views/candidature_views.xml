@@ -253,5 +253,16 @@
                 </xpath>
             </field>
         </record>
+        <record id="hr_applicant_view_form_add_sourcer" model="ir.ui.view">
+            <field name="name">hr.applicant.form.add.sourcer</field>
+            <field name="model">hr.applicant</field>
+            <field name="inherit_id" ref="hr_recruitment.hr_applicant_view_form"/>
+            <field name="arch" type="xml">
+                <!-- Add sourcer field after interviewer_ids -->
+                <xpath expr="//field[@name='interviewer_ids']" position="after">
+                    <field name="sourcer" widget="many2one_avatar_user" placeholder="Select sourcer"/>
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>
